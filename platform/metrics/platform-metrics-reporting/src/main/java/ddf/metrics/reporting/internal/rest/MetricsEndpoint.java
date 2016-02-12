@@ -263,16 +263,12 @@ public class MetricsEndpoint {
                         .createGraph(metricName, rrdFilename, startTime, endTime, yAxisLabel,
                                 title);
                 ByteArrayInputStream bis = new ByteArrayInputStream(metricsGraphBytes);
-                response = Response.ok(bis, PNG_MIME_TYPE).build();
-            } catch (IOException e) {
+                response = Response.ok(bis, PNG_MIME_TYPE)
+                        .build();
+            } catch (IOException | MetricsGraphException e) {
                 LOGGER.warn("Could not create graph for metric " + metricName);
                 throw new MetricsEndpointException(
-                        "Cannot create metrics graph for metric " + metricName,
-                        Response.Status.BAD_REQUEST);
-            } catch (MetricsGraphException e) {
-                LOGGER.warn("Could not create graph for metric " + metricName);
-                throw new MetricsEndpointException(
-                        "Cannot create metrics graph for metric " + metricName,
+                        "Cannot create metrics graph for specified metric.",
                         Response.Status.BAD_REQUEST);
             }
         } else if (outputFormat.equalsIgnoreCase("csv")) {
@@ -281,15 +277,10 @@ public class MetricsEndpoint {
                 ResponseBuilder responseBuilder = Response.ok(csv);
                 responseBuilder.type("text/csv");
                 response = responseBuilder.build();
-            } catch (IOException e) {
+            } catch (IOException | MetricsGraphException e) {
                 LOGGER.warn("Could not create CSV data for metric " + metricName);
                 throw new MetricsEndpointException(
-                        "Cannot create CSV data for metric " + metricName,
-                        Response.Status.BAD_REQUEST);
-            } catch (MetricsGraphException e) {
-                LOGGER.warn("Could not create CSV data for metric " + metricName);
-                throw new MetricsEndpointException(
-                        "Cannot create CSV data for metric " + metricName,
+                        "Cannot create CSV data for specified metric.",
                         Response.Status.BAD_REQUEST);
             }
         } else if (outputFormat.equalsIgnoreCase("xls")) {
@@ -302,15 +293,10 @@ public class MetricsEndpoint {
                 ResponseBuilder responseBuilder = Response.ok(is);
                 responseBuilder.type("application/vnd.ms-excel");
                 response = responseBuilder.build();
-            } catch (IOException e) {
+            } catch (IOException | MetricsGraphException e) {
                 LOGGER.warn("Could not create XLS data for metric " + metricName);
                 throw new MetricsEndpointException(
-                        "Cannot create XLS data for metric " + metricName,
-                        Response.Status.BAD_REQUEST);
-            } catch (MetricsGraphException e) {
-                LOGGER.warn("Could not create XLS data for metric " + metricName);
-                throw new MetricsEndpointException(
-                        "Cannot create XLS data for metric " + metricName,
+                        "Cannot create XLS data for specified metric.",
                         Response.Status.BAD_REQUEST);
             }
         } else if (outputFormat.equalsIgnoreCase("ppt")) {
@@ -323,15 +309,10 @@ public class MetricsEndpoint {
                 ResponseBuilder responseBuilder = Response.ok(is);
                 responseBuilder.type("application/vnd.ms-powerpoint");
                 response = responseBuilder.build();
-            } catch (IOException e) {
+            } catch (IOException | MetricsGraphException e) {
                 LOGGER.warn("Could not create PPT data for metric " + metricName);
                 throw new MetricsEndpointException(
-                        "Cannot create PPT data for metric " + metricName,
-                        Response.Status.BAD_REQUEST);
-            } catch (MetricsGraphException e) {
-                LOGGER.warn("Could not create PPT data for metric " + metricName);
-                throw new MetricsEndpointException(
-                        "Cannot create PPT data for metric " + metricName,
+                        "Cannot create PPT data for metric for specified metric.",
                         Response.Status.BAD_REQUEST);
             }
         } else if (outputFormat.equalsIgnoreCase("xml")) {
@@ -342,15 +323,10 @@ public class MetricsEndpoint {
                 ResponseBuilder responseBuilder = Response.ok(xmlData);
                 responseBuilder.type("text/xml");
                 response = responseBuilder.build();
-            } catch (IOException e) {
+            } catch (IOException | MetricsGraphException e) {
                 LOGGER.warn("Could not create XML data for metric " + metricName);
                 throw new MetricsEndpointException(
-                        "Cannot create XML data for metric " + metricName,
-                        Response.Status.BAD_REQUEST);
-            } catch (MetricsGraphException e) {
-                LOGGER.warn("Could not create XML data for metric " + metricName);
-                throw new MetricsEndpointException(
-                        "Cannot create XML data for metric " + metricName,
+                        "Cannot create XML data for specified metric.",
                         Response.Status.BAD_REQUEST);
             }
         } else if (outputFormat.equalsIgnoreCase("json")) {
@@ -361,15 +337,10 @@ public class MetricsEndpoint {
                 ResponseBuilder responseBuilder = Response.ok(jsonData);
                 responseBuilder.type("application/json");
                 response = responseBuilder.build();
-            } catch (IOException e) {
+            } catch (IOException | MetricsGraphException e) {
                 LOGGER.warn("Could not create JSON data for metric " + metricName);
                 throw new MetricsEndpointException(
-                        "Cannot create JSON data for metric " + metricName,
-                        Response.Status.BAD_REQUEST);
-            } catch (MetricsGraphException e) {
-                LOGGER.warn("Could not create JSON data for metric " + metricName);
-                throw new MetricsEndpointException(
-                        "Cannot create JSON data for metric " + metricName,
+                        "Cannot create JSON data for specified metric.",
                         Response.Status.BAD_REQUEST);
             }
         }
@@ -540,13 +511,9 @@ public class MetricsEndpoint {
                 responseBuilder.header("Content-Disposition", dispositionString);
                 response = responseBuilder.build();
             }
-        } catch (IOException e) {
+        } catch (IOException | MetricsGraphException e) {
             LOGGER.warn("Could not create " + outputFormat + " report", e);
-            throw new MetricsEndpointException("Could not create " + outputFormat + " report",
-                    Response.Status.BAD_REQUEST);
-        } catch (MetricsGraphException e) {
-            LOGGER.warn("Could not create " + outputFormat + " report", e);
-            throw new MetricsEndpointException("Could not create " + outputFormat + " report",
+            throw new MetricsEndpointException("Could not create report in specified output format.",
                     Response.Status.BAD_REQUEST);
         }
 
