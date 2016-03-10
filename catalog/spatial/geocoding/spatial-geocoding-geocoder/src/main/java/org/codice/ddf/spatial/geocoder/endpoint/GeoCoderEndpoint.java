@@ -27,7 +27,6 @@ import org.opengis.geometry.DirectPosition;
 import org.opengis.geometry.primitive.Point;
 
 import ddf.catalog.util.impl.ServiceSelector;
-
 import net.minidev.json.JSONArray;
 import net.minidev.json.JSONObject;
 
@@ -49,9 +48,14 @@ public class GeoCoderEndpoint {
     @GET
     public Response getLocation(@QueryParam("jsonp") String jsonp,
             @QueryParam("query") String query) {
-
-        JSONObject jsonObject = doQuery(query);
-        return Response.ok(jsonp + "(" + jsonObject.toJSONString() + ")").build();
+        if (JsonpValidator.isValidJsonp(jsonp)) {
+            JSONObject jsonObject = doQuery(query);
+            return Response.ok(jsonp + "(" + jsonObject.toJSONString() + ")")
+                    .build();
+        } else {
+            return Response.status(Response.Status.BAD_REQUEST)
+                    .build();
+        }
     }
 
     JSONObject doQuery(String query) {

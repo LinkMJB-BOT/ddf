@@ -221,15 +221,15 @@ public class AttributeQueryClient {
 
         try {
             Assertion assertion = null;
+
             DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
             documentBuilderFactory.setNamespaceAware(true);
+            documentBuilderFactory.setExpandEntityReferences(false);
+            documentBuilderFactory.setFeature(
+                    "http://javax.xml.XMLConstants/feature/secure-processing",
+                    true);
             Document responseDocument = documentBuilderFactory.newDocumentBuilder()
                     .parse(connection.getInputStream());
-
-            // Print Response
-            if (LOGGER.isTraceEnabled()) {
-                printXML("SAML Response:\n {}", responseDocument);
-            }
 
             // Extract Response from Soap message.
             Node responseNode = responseDocument.getElementsByTagNameNS(SAML2_PROTOCOL, "Response")

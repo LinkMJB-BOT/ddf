@@ -489,8 +489,8 @@ public class ContentEndpoint {
             response = builder.build();
 
         } catch (Exception e) {
-            LOGGER.error("Error retrieving item from content framework.", e);
-            throw new ContentEndpointException("Content Item " + id + " not found.",
+            LOGGER.error("Error retrieving item {} from content framework.", id, e);
+            throw new ContentEndpointException("Specified content item could not be found.",
                     Response.Status.NOT_FOUND);
         }
 
@@ -556,8 +556,8 @@ public class ContentEndpoint {
                 response = responseBuilder.build();
             }
         } catch (Exception e) {
-            LOGGER.error("Error updating item in content framework", e);
-            throw new ContentEndpointException("Content Item " + id + " not found.",
+            LOGGER.error("Error updating item {} in content framework", id, e);
+            throw new ContentEndpointException("Specified content item could not be found.",
                     Response.Status.NOT_FOUND);
         }
 
@@ -606,16 +606,16 @@ public class ContentEndpoint {
                 addHttpHeaders(deleteResponse, responseBuilder);
                 response = responseBuilder.build();
             } else {
-                Response.ResponseBuilder responseBuilder = Response
-                        .ok("Content Item " + id + " not deleted");
+                LOGGER.warn("Content Item {} could not be deleted.", id);
+                Response.ResponseBuilder responseBuilder = Response.ok(
+                        "Specified content item could not be deleted.");
                 responseBuilder.status(Response.Status.NOT_FOUND);
                 response = responseBuilder.build();
             }
         } catch (ContentFrameworkException e) {
-            LOGGER.error("Error deleting item from content framework", e);
-            throw new ContentEndpointException("Content Item " + id + " not found.",
+            LOGGER.error("Error deleting item {} from content framework", id, e);
+            throw new ContentEndpointException("Specified content item could not be found.",
                     Response.Status.NOT_FOUND);
-
         }
 
         LOGGER.trace("EXITING: executeDelete");
